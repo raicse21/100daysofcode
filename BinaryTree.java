@@ -1,6 +1,8 @@
 package MarchLongChallenge;
 
+import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class BinaryTree {
 	
@@ -15,9 +17,7 @@ public class BinaryTree {
 			this.rightNode=right;
 		}
 	}
-	
 	private Node rootNode;
-	private int datasize;
 	
 	public BinaryTree() {
 		Scanner s =new Scanner(System.in);
@@ -32,13 +32,10 @@ public class BinaryTree {
 				System.out.println("Enter data for left child of "+ parent.data);
 			}else {
 				System.out.println("Enter data for right child of "+ parent.data);
-			}
-			
-			
+			}		
 		}
 		int data =s.nextInt();
 		Node node=new Node(data,null,null);
-		this.datasize++;
 		
 		boolean choice =false;
 		System.out.println("Does "+ node.data + " have a left Node");
@@ -100,7 +97,7 @@ public class BinaryTree {
 		}
 		int lheight = this.height(node.leftNode);
 		int rheight = this.height(node.rightNode);
-		return lheight + rheight + 1;
+		return Math.max(lheight, rheight) + 1;
 	}
 	
 	public int  min() {
@@ -168,6 +165,69 @@ public class BinaryTree {
 		System.out.print(node.data+ " ");
 	}
 	
+	public void levelOrder() {
+		levelOrder(this.rootNode);
+	}
+
+	private void levelOrder(Node node) {
+		LinkedList<Node> queue = new LinkedList<>();
+		queue.add(node);
+		
+		while(!queue.isEmpty()) {
+			Node a = queue.removeFirst();
+			System.out.print(a.data+ " ");
+			if(a.leftNode != null) {
+				queue.addLast(a.leftNode);
+			}
+			if(a.rightNode != null) {
+				queue.addLast(a.rightNode);
+			}
+		}
+		
+	}
+	
+	
+	public void ZigZagOrder() {
+		this.ZigZagOrder(this.rootNode);
+	}
+	
+	private void ZigZagOrder(Node node) {
+		
+		Stack<Node> currentlevel = new Stack<>();
+		Stack<Node> nextlevel = new Stack<>();
+		boolean LtoR = true;
+		currentlevel.add(node);
+		while(!currentlevel.isEmpty()) {
+			Node a = currentlevel.pop();
+			System.out.print( a.data + " ");
+			
+			if(LtoR) {
+				if(a.leftNode!=null) {
+					nextlevel.add(a.leftNode);
+				}
+				if(a.rightNode!=null) {
+					nextlevel.add(a.rightNode);
+				}
+			}else {
+				if(a.rightNode!=null) {
+					nextlevel.add(a.rightNode);
+				}
+				if(a.leftNode!=null) {
+					nextlevel.add(a.leftNode);
+				}
+			}
+			
+			if(currentlevel.isEmpty()) {
+				LtoR = !LtoR;
+				Stack<Node> temp = currentlevel;
+				currentlevel = nextlevel;
+				nextlevel = temp;
+			}
+		}
+				
+	}
+	
+	
 	public static void main(String[] args) {
 		BinaryTree tree = new BinaryTree();
 		// 2 true 7 true 2 false false true 6 true 5 false false true 11 false false true 5 false true 9 true 4 false false false 
@@ -183,6 +243,12 @@ public class BinaryTree {
 		System.out.println();
 		System.out.println("Postorder Traversal :--");
 		tree.postorder();
+		System.out.println();
+		System.out.println("Levelorder Traversal :--");
+		tree.levelOrder();
+		System.out.println();
+		System.out.println("ZigZagOrder Traversal :--");
+		tree.ZigZagOrder();
 	}
 }
 
